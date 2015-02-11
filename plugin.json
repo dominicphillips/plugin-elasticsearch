@@ -2,7 +2,16 @@
     "description": "Elastic Search Plugin written in LUA",
     "icon" : "icon.png",
     "command": "boundary-meter index.lua",
-    "metrics" : ["ELASTIC_CLUSTERNAME, ELASTIC_STATUS, ELASTIC_TIMED_OUT, ELASTIC_NUMBER_OF_NODES, NUMBER_OF_DATA_NODES"],
+    "metrics" : ["ELASTIC_CLUSTERNAME",
+                 "ELASTIC_STATUS",
+                 "ELASTIC_TIMED_OUT",
+                 "ELASTIC_NUMBER_OF_NODES",
+                 "NUMBER_OF_DATA_NODES",
+                 "ELASTIC_ACTIVE_PRIMARY_SHARDS",
+                 "ELASTIC_ACTIVE_SHARDS",
+                 "ELASTIC_RELOCATING_SHARDS",
+                 "ELASTIC_INITIAZING_SHARDS",
+                 "ELASTIC_UNASSIGNED_SHARDS"],
     "postExtract" : "",
     "paramSchema": [
         {
