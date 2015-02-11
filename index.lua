@@ -7,18 +7,18 @@ local doreq = function(host, port, path, cb)
     local output = ""
     local req = http.request({host = host, port = port, path = path}, function (res)
       res:on("error", function(err)
-        cb("Error while receiving a response: " .. tostring(err))
+        cb("Error while receiving a response: " .. tostring(err), nil)
       end)
       res:on("data", function (chunk)
         output = output .. chunk
       end)
       res:on("end", function ()
         res:destroy()
-        cb(output)
+        cb(nil, output)
       end)
     end)
     req:on("error", function(err)
-      cb("Error while sending a request: " .. tostring(err))
+      cb("Error while sending a request: " .. tostring(err), nil)
     end)
     req:done()
 end
@@ -35,7 +35,8 @@ fs.readFile("param.json", function (err, data)
 
   timer.setInterval(poll, function ()
 
-    doreq(host, port, "/_cluster/health", function(body)
+    doreq(host, port, "/_cluster/health", function(err, body)
+        if (err) then return end
         health = JSON.parse(body)
         print(string.format("ELASTIC_CLUSTERNAME %s", health["cluster_name"]))
         print(string.format("ELASTIC_STATUS %s", health["status"]))
