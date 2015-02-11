@@ -1,0 +1,25 @@
+{
+    "description": "Elastic Search Plugin written in LUA",
+    "icon" : "icon.png",
+    "command": "boundary-meter index.lua",
+    "metrics" : ["ELASTIC_CLUSTERNAME, ELASTIC_STATUS, ELASTIC_TIMED_OUT, ELASTIC_NUMBER_OF_NODES, NUMBER_OF_DATA_NODES"],
+    "postExtract" : "",
+    "paramSchema": [
+        {
+            "title": "HOST",
+            "name": "host",
+            "description": "The ElasticSearch hostname",
+            "type": "string",
+            "default": "localhost",
+            "required": false
+        },
+        {
+            "title" : "Port",
+            "name" : "port",
+            "description" : "The ElasticSearch port",
+            "type" : "integer",
+            "default" : 9200
+        },
+
+    ]
+}
