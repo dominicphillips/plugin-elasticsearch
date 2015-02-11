@@ -29,7 +29,7 @@ fs.readFile("param.json", function (err, data)
 
   poll = value['poll'] or 5000
   host = value['host'] or "localhost"
-  port = value['port'] or 8000
+  port = value['port'] or 9200
 
   print("_bevent:ElasticSearch plugin up : version 1.0|t:info|tags:elasticsearch,lua,plugin")
 
