@@ -3,6 +3,12 @@ local fs = require('fs')
 local timer = require('timer')
 local http = require('http')
 
+local __pgk = "BOUNDARY ELASTICSEARCH"
+
+function error(err)
+  if err then print(string.format("%s ERROR: %s", __pgk, tostring(err))) return err end
+end
+
 local doreq = function(host, port, path, cb)
     local output = ""
     local req = http.request({host = host, port = port, path = path}, function (res)
@@ -36,7 +42,7 @@ fs.readFile("param.json", function (err, data)
   timer.setInterval(poll, function ()
 
     doreq(host, port, "/_cluster/health", function(err, body)
-        if (err) then return end
+        if error(err) then return end
         health = JSON.parse(body)
         print(string.format("ELASTIC_CLUSTERNAME %s", health["cluster_name"]))
         print(string.format("ELASTIC_STATUS %s", health["status"]))
