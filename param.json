@@ -1,5 +1,5 @@
 {
-	"poll": 5000,
+	"poll": 1000,
 	"host": "localhost",
 	"port": 9200
 }

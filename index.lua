@@ -1,14 +1,15 @@
-local JSON = require('json')
-local fs = require('fs')
-local timer = require('timer')
-local http = require('http')
+local JSON     = require('json')
+local timer    = require('timer')
+local http     = require('http')
+local boundary = require('boundary')
 
 local __pgk = "BOUNDARY ELASTICSEARCH"
 
-function error(err)
+function berror(err)
   if err then print(string.format("%s ERROR: %s", __pgk, tostring(err))) return err end
 end
 
+--- do a http request
 local doreq = function(host, port, path, cb)
     local output = ""
     local req = http.request({host = host, port = port, path = path}, function (res)
@@ -29,36 +30,37 @@ local doreq = function(host, port, path, cb)
     req:done()
 end
 
-fs.readFile("param.json", function (err, data)
-  if (err) then return end
-  value = JSON.parse(data)
+local poll = 1000
+local host = "localhost"
+local port = 9200
 
-  poll = value['poll'] or 5000
-  host = value['host'] or "localhost"
-  port = value['port'] or 9200
+if (boundary.param ~= nil) then
+  poll = boundary.param['poll'] or poll
+  host = boundary.param['host'] or host
+  port = boundary.param['port'] or port
+end
 
-  print("_bevent:ElasticSearch plugin up : version 1.0|t:info|tags:elasticsearch,lua,plugin")
+print("_bevent:ElasticSearch plugin up : version 1.0|t:info|tags:elasticsearch,lua,plugin")
 
-  timer.setInterval(poll, function ()
+timer.setInterval(poll, function ()
 
-    doreq(host, port, "/_cluster/health", function(err, body)
-        if error(err) then return end
-        health = JSON.parse(body)
-        print(string.format("ELASTIC_CLUSTERNAME %s", health["cluster_name"]))
-        print(string.format("ELASTIC_STATUS %s", health["status"]))
-        print(string.format("ELASTIC_TIMED_OUT %s", health["timed_out"]))
-        print(string.format("ELASTIC_NUMBER_OF_NODES %d", health["number_of_nodes"]))
-        print(string.format("ELASTIC_NUMBER_OF_DATA_NODES %d", health["number_of_data_nodes"]))
-        print(string.format("ELASTIC_ACTIVE_PRIMARY_SHARDS %d", health["active_primary_shards"]))
-        print(string.format("ELASTIC_ACTIVE_SHARDS %d", health["active_shards"]))
-        print(string.format("ELASTIC_RELOCATING_SHARDS %d", health["relocating_shards"]))
-        print(string.format("ELASTIC_INITIAZING_SHARDS %d", health["initializing_shards"]))
-        print(string.format("ELASTIC_UNASSIGNED_SHARDS %d", health["unassigned_shards"]))
-    end)
-
+  doreq(host, port, "/_cluster/health", function(err, body)
+      if berror(err) then return end
+      health = JSON.parse(body)
+      print(string.format("ELASTIC_CLUSTERNAME %s", health["cluster_name"]))
+      print(string.format("ELASTIC_STATUS %s", health["status"]))
+      print(string.format("ELASTIC_TIMED_OUT %s", health["timed_out"]))
+      print(string.format("ELASTIC_NUMBER_OF_NODES %d", health["number_of_nodes"]))
+      print(string.format("ELASTIC_NUMBER_OF_DATA_NODES %d", health["number_of_data_nodes"]))
+      print(string.format("ELASTIC_ACTIVE_PRIMARY_SHARDS %d", health["active_primary_shards"]))
+      print(string.format("ELASTIC_ACTIVE_SHARDS %d", health["active_shards"]))
+      print(string.format("ELASTIC_RELOCATING_SHARDS %d", health["relocating_shards"]))
+      print(string.format("ELASTIC_INITIAZING_SHARDS %d", health["initializing_shards"]))
+      print(string.format("ELASTIC_UNASSIGNED_SHARDS %d", health["unassigned_shards"]))
   end)
 
-
 end)
+
+
 
 
